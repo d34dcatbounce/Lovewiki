@@ -3,295 +3,413 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Lexicon of Love | 참여형 사랑의 정의 사전</title>
+    <title>Love Wiki</title>
     <style>
-        /* ★ 아날로그 아카이브, 타자기와 붉은 잉크 컨셉 */
+        /* 노션 스타일의 깔끔하고 미니멀한 테마 */
+        :root {
+            --bg-color: #ffffff;
+            --sidebar-bg: #f7f7f5;
+            --text-main: #37352f;
+            --text-muted: #9b9a97;
+            --border-color: #e9e9e7;
+            --hover-bg: #efeee9;
+            --danger: #eb5757;
+        }
+
         body {
-            font-family: 'Pretendard', 'Nanum Myeongjo', 'Apple SD Gothic Neo', serif;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
             margin: 0;
             padding: 0;
-            background-color: #F7F5F0; /* 건조한 종이 질감의 미색 */
-            color: #2C2C2C; /* 먹색 텍스트 */
-            line-height: 1.6;
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            display: flex;
+            height: 100vh;
+            overflow: hidden;
         }
 
-        /* 헤더 (문서의 표지 느낌) */
-        header {
-            background-color: #F7F5F0;
-            padding: 50px 20px 30px;
-            text-align: center;
-            border-bottom: 1px solid #D9D6D0;
-        }
-
-        header h1 {
-            margin: 0;
-            font-size: 2.8rem;
-            color: #111111;
-            letter-spacing: 3px;
-            text-transform: uppercase;
-            font-family: 'Times New Roman', Times, serif; /* 영문은 클래식하게 */
-        }
-
-        header h1 span {
-            color: #C83200; /* 교정용 붉은 잉크 포인트 */
-        }
-
-        header p {
-            color: #555555;
-            font-size: 0.95rem;
-            max-width: 600px;
-            margin: 15px auto 0;
-            word-break: keep-all;
-            line-height: 1.8;
-        }
-
-        /* 좌우 레이아웃 */
-        .container {
+        /* --- 사이드바 영역 --- */
+        .sidebar {
+            width: 280px;
+            background-color: var(--sidebar-bg);
+            border-right: 1px solid var(--border-color);
             display: flex;
             flex-direction: column;
-            gap: 40px;
-            max-width: 1100px;
-            margin: 40px auto;
-            padding: 0 20px;
+            transition: width 0.3s ease;
         }
 
-        @media (min-width: 850px) {
-            .container {
-                flex-direction: row;
-            }
-            .left-panel { flex: 1.2; }
-            .right-panel { flex: 0.8; }
+        .sidebar-header {
+            padding: 20px 20px 10px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
         }
 
-        /* 패널 공통 (서류철 느낌의 직각 레이아웃) */
-        .left-panel, .right-panel {
-            background: #FFFFFF;
-            padding: 35px;
-            border: 1px solid #D9D6D0;
-            border-radius: 0;
-            box-shadow: 2px 2px 0px rgba(0,0,0,0.03); /* 아주 미세한 그림자 */
-        }
-
-        h2 {
-            margin-top: 0;
+        .logo {
+            font-weight: 700;
             font-size: 1.1rem;
-            color: #111111;
-            border-bottom: 2px solid #C83200; /* 붉은 밑줄 */
-            padding-bottom: 10px;
-            margin-bottom: 25px;
-            text-transform: uppercase;
-            letter-spacing: 2px;
+            letter-spacing: -0.5px;
+            cursor: pointer;
         }
 
-        /* ------------------
-           좌측: 위키 아카이브 목록
-           ------------------ */
-        #list-container {
-            max-height: 650px;
-            overflow-y: auto;
-            scrollbar-width: thin;
-            scrollbar-color: #C83200 #F0EEE9;
-            padding-right: 15px;
+        .search-container {
+            padding: 0 20px 15px;
         }
-        #list-container::-webkit-scrollbar { width: 4px; }
-        #list-container::-webkit-scrollbar-thumb { background: #C83200; }
-        #list-container::-webkit-scrollbar-track { background: #F0EEE9; }
-        
-        details {
-            background: #FFFFFF;
-            border-top: 1px solid #EAE8E3;
-            border-bottom: 1px solid #EAE8E3;
-            margin-bottom: -1px; /* 테두리 겹침 방지 */
-            padding: 20px 0;
-            transition: background-color 0.2s ease;
+
+        .search-container input {
+            width: 100%;
+            padding: 8px 12px;
+            background-color: rgba(0, 0, 0, 0.04);
+            border: 1px solid transparent;
+            border-radius: 4px;
+            font-size: 0.9rem;
+            box-sizing: border-box;
+            outline: none;
+            transition: background-color 0.2s;
+        }
+
+        .search-container input:focus {
+            background-color: #fff;
+            border-color: var(--border-color);
+            box-shadow: 0 0 0 1px rgba(0,0,0,0.05);
+        }
+
+        .doc-list {
+            flex: 1;
+            overflow-y: auto;
+            list-style: none;
+            padding: 0 10px;
+            margin: 0;
+        }
+
+        .doc-list li {
+            padding: 8px 12px;
+            margin-bottom: 2px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 0.95rem;
+            color: var(--text-main);
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .doc-list li:hover {
+            background-color: var(--hover-bg);
+        }
+
+        /* --- 메인 콘텐츠 영역 --- */
+        .main-content {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
             position: relative;
         }
-        details:hover {
-            background: #FAF9F6;
-        }
-        
-        summary {
-            font-weight: 700;
-            font-size: 1.2rem;
-            color: #111111;
-            cursor: pointer;
-            list-style: none;
-            outline: none;
-            word-break: keep-all;
-            padding-right: 65px; 
-            padding-left: 15px;
-            border-left: 3px solid transparent;
-            transition: border-color 0.2s;
-        }
-        
-        summary::-webkit-details-marker { display: none; }
-        details[open] summary { border-left: 3px solid #C83200; } /* 열렸을 때 붉은 인덱스 */
-        
-        .content-body {
-            margin-top: 20px;
-            padding: 20px 15px 0 18px;
-            color: #444444; 
-            line-height: 1.8;
-            font-size: 1rem;
-            white-space: pre-wrap;
-            text-align: justify;
+
+        .top-bar {
+            height: 50px;
+            padding: 0 40px;
+            display: flex;
+            align-items: center;
+            justify-content: flex-end;
         }
 
-        /* 삭제 버튼 (교정 부호 느낌) */
-        .delete-btn {
-            position: absolute;
-            top: 20px;
-            right: 10px;
-            background-color: transparent;
-            color: #A09E9A;
-            border: 1px solid #D9D6D0;
-            padding: 3px 8px;
-            border-radius: 0;
-            font-size: 0.7rem;
-            cursor: pointer;
-            transition: all 0.2s;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-        }
-        .delete-btn:hover { 
-            background-color: #C83200; 
-            border-color: #C83200;
-            color: #FFFFFF;
-            text-decoration: line-through; /* 호버 시 취소선 효과 */
-        }
-
-        /* ------------------
-           우측: 기여하기 폼
-           ------------------ */
-        .custom-form { display: flex; flex-direction: column; gap: 25px; }
-        .form-group { display: flex; flex-direction: column; gap: 8px; }
-        .form-group label { 
-            font-weight: 600; 
-            font-size: 0.85rem; 
-            color: #777777; 
-            letter-spacing: 1px; 
-            text-transform: uppercase; 
-        }
-
-        .custom-form input, .custom-form textarea {
-            width: 100%; 
-            padding: 15px; 
-            background-color: #FAF9F6;
-            color: #111111;
-            border: 1px solid #D9D6D0;
-            border-radius: 0; 
-            font-size: 1rem; 
-            font-family: inherit;
-            box-sizing: border-box; 
-            transition: all 0.2s;
-        }
-        .custom-form input:focus, .custom-form textarea:focus { 
-            outline: none; 
-            background-color: #FFFFFF;
-            border-color: #C83200; 
-            box-shadow: -3px 0 0 #C83200; /* 타이핑 중인 줄을 표시하는 듯한 효과 */
-        }
-        .custom-form textarea { height: 200px; resize: vertical; }
-
-        .submit-btn {
-            background-color: #2C2C2C; 
-            color: #FFFFFF; 
+        .new-doc-btn {
+            background: none;
             border: none;
-            padding: 16px; 
-            border-radius: 0; 
-            font-size: 1rem;
-            font-weight: 600; 
-            letter-spacing: 2px;
-            text-transform: uppercase;
-            cursor: pointer; 
-            transition: background-color 0.2s;
-            margin-top: 10px;
+            color: var(--text-muted);
+            font-size: 0.95rem;
+            cursor: pointer;
+            padding: 6px 12px;
+            border-radius: 4px;
+            transition: all 0.2s;
         }
-        .submit-btn:hover { background-color: #C83200; }
-        .submit-btn:disabled { background-color: #D9D6D0; color: #888; cursor: not-allowed; }
+
+        .new-doc-btn:hover {
+            background-color: var(--hover-bg);
+            color: var(--text-main);
+        }
+
+        .content-area {
+            flex: 1;
+            padding: 40px 15% 100px;
+            overflow-y: auto;
+        }
+
+        /* --- 뷰 모드 (문서 읽기) --- */
+        #view-mode {
+            display: none; /* 기본 숨김 */
+        }
+
+        .view-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 30px;
+            position: relative;
+        }
+
+        .view-title {
+            font-size: 2.5rem;
+            font-weight: 800;
+            margin: 0;
+            line-height: 1.2;
+        }
+
+        .view-body {
+            font-size: 1.05rem;
+            line-height: 1.8;
+            white-space: pre-wrap;
+        }
+
+        /* 케밥 메뉴 */
+        .kebab-menu {
+            position: relative;
+        }
+
+        .kebab-btn {
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            color: var(--text-muted);
+            cursor: pointer;
+            padding: 5px 10px;
+            border-radius: 4px;
+        }
+
+        .kebab-btn:hover { background-color: var(--hover-bg); }
+
+        .dropdown {
+            display: none;
+            position: absolute;
+            right: 0;
+            top: 40px;
+            background: white;
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+            width: 120px;
+            z-index: 10;
+        }
+
+        .dropdown.active { display: block; }
+
+        .dropdown button {
+            width: 100%;
+            text-align: left;
+            padding: 10px 15px;
+            background: none;
+            border: none;
+            font-size: 0.9rem;
+            cursor: pointer;
+        }
+
+        .dropdown button:hover { background-color: var(--hover-bg); }
+        .dropdown button.danger { color: var(--danger); }
+
+        /* --- 에디트 모드 (새 문서 작성) --- */
+        #edit-mode {
+            display: block; /* 초기에는 빈 작성 폼 표시 */
+        }
+
+        .notion-input-title {
+            width: 100%;
+            font-size: 2.5rem;
+            font-weight: 800;
+            border: none;
+            outline: none;
+            background: transparent;
+            color: var(--text-main);
+            margin-bottom: 20px;
+            padding: 0;
+            font-family: inherit;
+        }
+
+        .notion-input-title::placeholder { color: #e0e0e0; }
+
+        .notion-input-body {
+            width: 100%;
+            height: calc(100vh - 300px);
+            font-size: 1.05rem;
+            line-height: 1.8;
+            border: none;
+            outline: none;
+            background: transparent;
+            color: var(--text-main);
+            resize: none;
+            font-family: inherit;
+        }
+
+        .notion-input-body::placeholder { color: #e0e0e0; }
+
+        .save-btn {
+            background-color: #2eaadc; /* 노션 파란색 포인트 */
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 4px;
+            font-size: 0.9rem;
+            font-weight: 600;
+            cursor: pointer;
+            margin-top: 20px;
+        }
+
+        .save-btn:hover { background-color: #258db8; }
+        .save-btn:disabled { background-color: #a8d5e8; cursor: not-allowed; }
+
+        .empty-state {
+            color: var(--text-muted);
+            font-size: 0.9rem;
+            text-align: center;
+            margin-top: 50px;
+        }
+
     </style>
 </head>
 <body>
 
-    <header>
-        <h1>Lexicon of <span>Love</span></h1>
-        <p>기표로서의 '사랑'을 파괴하고, 당신이 발견한 작품 속 서늘한 진실로 빈자리를 채워주세요. 이 위키는 누구나 기록하고 지울 수 있는 백지입니다.</p>
-    </header>
-
-    <div class="container">
-        <div class="left-panel">
-            <h2>Archive DB</h2>
-            <div id="list-container"><span style='color:#888;'>데이터베이스 동기화 중...</span></div>
+    <aside class="sidebar">
+        <div class="sidebar-header">
+            <div class="logo" onclick="showNewDoc()">📚 Love Wiki</div>
+        </div>
+        
+        <div class="search-container">
+            <input type="text" id="searchInput" placeholder="검색..." onkeyup="filterDocs()">
         </div>
 
-        <div class="right-panel">
-            <h2>Contribute</h2>
-            <form class="custom-form" id="myForm">
-                <div class="form-group">
-                    <label for="title">Title (작품명)</label>
-                    <input type="text" id="title" required placeholder="예: 이터널 선샤인, 사누최">
-                </div>
-                
-                <div class="form-group">
-                    <label for="content">Definition (사랑의 정의)</label>
-                    <textarea id="content" required placeholder="해당 작품이 말하는 파괴적이고, 혹은 모순적인 사랑의 정의를 서술해주세요."></textarea>
-                </div>
-                
-                <button type="submit" id="submitBtn" class="submit-btn">Record</button>
-            </form>
+        <ul class="doc-list" id="sidebarList">
+            <li class="empty-state">데이터 불러오는 중...</li>
+        </ul>
+    </aside>
+
+    <main class="main-content">
+        <div class="top-bar">
+            <button class="new-doc-btn" onclick="showNewDoc()">새 문서 +</button>
         </div>
-    </div>
+
+        <div class="content-area">
+            
+            <div id="view-mode">
+                <div class="view-header">
+                    <h1 class="view-title" id="displayTitle">제목</h1>
+                    <div class="kebab-menu">
+                        <button class="kebab-btn" onclick="toggleMenu(event)">⋮</button>
+                        <div class="dropdown" id="kebabDropdown">
+                            <button onclick="editDoc()">수정</button>
+                            <button class="danger" onclick="deleteDoc()">삭제</button>
+                        </div>
+                    </div>
+                </div>
+                <div class="view-body" id="displayBody">내용</div>
+            </div>
+
+            <div id="edit-mode">
+                <form id="myForm">
+                    <input type="text" id="inputTitle" class="notion-input-title" placeholder="제목 없는 문서" required autocomplete="off">
+                    <textarea id="inputBody" class="notion-input-body" placeholder="내용을 입력하세요..." required></textarea>
+                    <button type="submit" id="submitBtn" class="save-btn">저장</button>
+                </form>
+            </div>
+
+        </div>
+    </main>
 
     <script>
-        // 사용자님의 Google Apps Script URL
         const scriptUrl = "https://script.google.com/macros/s/AKfycbzd77E3TuZzFoxsN9C5W0ZIYscV3NEsndO-mhel9JZPNap6sS4_O7wDpc9rz8gmcEu-/exec";
-        const listContainer = document.getElementById('list-container');
-        const myForm = document.getElementById('myForm');
-        const submitBtn = document.getElementById('submitBtn');
+        let dbData = []; // DB 데이터를 저장할 전역 변수
+        let currentDocId = null; // 현재 보고 있는 문서의 ID
 
-        // DB에서 위키 데이터 불러오기
+        const sidebarList = document.getElementById('sidebarList');
+        const viewMode = document.getElementById('view-mode');
+        const editMode = document.getElementById('edit-mode');
+        const myForm = document.getElementById('myForm');
+        const searchInput = document.getElementById('searchInput');
+
+        // 바탕 클릭 시 케밥 메뉴 닫기
+        window.onclick = function(event) {
+            if (!event.target.matches('.kebab-btn')) {
+                document.getElementById('kebabDropdown').classList.remove('active');
+            }
+        }
+
+        // 1. 데이터 불러오기
         function loadData() {
-            listContainer.innerHTML = "<span style='color:#888;'>기록을 불러오는 중입니다...</span>";
-            
             fetch(scriptUrl)
                 .then(res => res.json())
                 .then(data => {
-                    if (data.length === 0) {
-                        listContainer.innerHTML = "<span style='color:#888;'>등록된 정의가 없습니다. 첫 번째 기록자가 되어주세요.</span>";
-                        return;
-                    }
-
-                    let html = '';
-                    // 최신 글이 위로 오도록 역순 출력
-                    for (let i = data.length - 1; i >= 0; i--) {
-                        const item = data[i];
-                        const safeTitle = String(item.title || "Untitled").replace(/</g, "&lt;").replace(/>/g, "&gt;");
-                        const safeContent = String(item.content || "No content").replace(/</g, "&lt;").replace(/>/g, "&gt;");
-                        
-                        html += `
-                            <details>
-                                <summary>${safeTitle}</summary>
-                                <button class="delete-btn" onclick="deleteData('${item.id}')">Delete</button>
-                                <div class="content-body">${safeContent}</div>
-                            </details>
-                        `;
-                    }
-                    listContainer.innerHTML = html;
+                    dbData = data.reverse(); // 최신순 정렬
+                    renderSidebar(dbData);
                 })
                 .catch(error => {
-                    listContainer.innerHTML = "<span style='color:#C83200;'>DB 연결에 실패했습니다.</span>";
+                    sidebarList.innerHTML = `<li class="empty-state">오류 발생</li>`;
                     console.error("Error:", error);
                 });
         }
 
-        // 위키 데이터 입력 (Insert)
+        // 2. 사이드바 목록 렌더링
+        function renderSidebar(dataList) {
+            if (dataList.length === 0) {
+                sidebarList.innerHTML = `<li class="empty-state">문서가 없습니다.</li>`;
+                return;
+            }
+
+            let html = '';
+            dataList.forEach(item => {
+                const safeTitle = String(item.title || "제목 없음").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+                // 클릭 시 해당 문서 열기
+                html += `<li onclick="openDoc('${item.id}')">📄 ${safeTitle}</li>`;
+            });
+            sidebarList.innerHTML = html;
+        }
+
+        // 3. 문서 검색 필터
+        function filterDocs() {
+            const query = searchInput.value.toLowerCase();
+            const filtered = dbData.filter(item => {
+                const title = String(item.title || "").toLowerCase();
+                return title.includes(query);
+            });
+            renderSidebar(filtered);
+        }
+
+        // 4. 새 문서 작성 화면 띄우기
+        function showNewDoc() {
+            currentDocId = null;
+            viewMode.style.display = 'none';
+            editMode.style.display = 'block';
+            myForm.reset();
+            document.getElementById('inputTitle').focus();
+        }
+
+        // 5. 문서 클릭 시 읽기 화면 띄우기
+        function openDoc(id) {
+            const doc = dbData.find(item => item.id === id);
+            if (!doc) return;
+
+            currentDocId = id;
+            
+            document.getElementById('displayTitle').innerText = doc.title || "제목 없음";
+            document.getElementById('displayBody').innerText = doc.content || "";
+
+            editMode.style.display = 'none';
+            viewMode.style.display = 'block';
+            document.getElementById('kebabDropdown').classList.remove('active');
+        }
+
+        // 6. 케밥 메뉴 토글
+        function toggleMenu(event) {
+            event.stopPropagation();
+            document.getElementById('kebabDropdown').classList.toggle('active');
+        }
+
+        // 7. 문서 저장 (Insert)
         myForm.addEventListener('submit', function(e) {
             e.preventDefault(); 
             
-            const titleVal = document.getElementById('title').value;
-            const contentVal = document.getElementById('content').value;
+            const titleVal = document.getElementById('inputTitle').value;
+            const contentVal = document.getElementById('inputBody').value;
+            const submitBtn = document.getElementById('submitBtn');
             
-            submitBtn.innerText = "Recording...";
+            submitBtn.innerText = "저장 중...";
             submitBtn.disabled = true;
 
             const formData = new URLSearchParams();
@@ -305,28 +423,30 @@
             })
             .then(() => {
                 myForm.reset(); 
-                loadData(); 
+                loadData(); // 목록 새로고침
+                submitBtn.innerText = "저장 완료!";
+                setTimeout(() => { showNewDoc(); submitBtn.innerText = "저장"; }, 1000); // 다시 새 문서 모드로
             })
             .catch(error => {
                 alert("기록 중 오류가 발생했습니다.");
-                console.error("Error:", error);
+                submitBtn.innerText = "저장";
             })
             .finally(() => {
-                submitBtn.innerText = "Record";
                 submitBtn.disabled = false;
             });
         });
 
-        // 위키 데이터 삭제 (Delete)
-        function deleteData(id) {
-            if (!confirm("이 정의를 목록에서 영구적으로 삭제하시겠습니까?")) return;
-
-            event.target.innerText = "지우는 중...";
-            event.target.disabled = true;
+        // 8. 문서 삭제 (Delete)
+        function deleteDoc() {
+            if (!currentDocId) return;
+            if (!confirm("삭제하시겠습니까?")) return;
 
             const formData = new URLSearchParams();
             formData.append('action', 'delete');
-            formData.append('id', id);
+            formData.append('id', currentDocId);
+
+            document.getElementById('kebabDropdown').classList.remove('active');
+            document.getElementById('displayBody').innerText = "삭제 중...";
 
             fetch(scriptUrl, {
                 method: 'POST',
@@ -334,15 +454,21 @@
             })
             .then(() => {
                 loadData(); 
+                showNewDoc(); // 삭제 후 빈 작성 폼으로 이동
             })
             .catch(error => {
                 alert("삭제 중 오류가 발생했습니다.");
                 console.error("Error:", error);
-                loadData(); 
             });
         }
 
-        // 초기 데이터 로드
+        // 9. 문서 수정 (UI 버튼만 구현됨)
+        function editDoc() {
+            alert("수정 기능은 곧 업데이트될 예정입니다.");
+            document.getElementById('kebabDropdown').classList.remove('active');
+        }
+
+        // 초기 실행
         loadData();
     </script>
 </body>
